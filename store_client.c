@@ -41,8 +41,18 @@ int stockroom[NUM_ITEMS];
  * first. Sections with lower addresses should be fully filled (if possible)
  * before moving onto the next section.
  */
+#define NUM_SPACES 10
 void refill_from_stockroom() {
-  // TODO: implement this function
+  for (int i = 0; i < NUM_AISLES; i++) {
+    unsigned long* cur_aisle = &aisles[i];
+    for (int j = 0; j < SECTIONS_PER_AISLE; j++) {
+      unsigned short section_id = get_id(cur_aisle, j);
+      int items_needed = (NUM_SPACES - num_items(cur_aisle, j));
+      if (stockroom[section_id] < items_needed) {items_needed = stockroom[section_id];}
+      stockroom[section_id] -= items_needed;
+      add_items(cur_aisle, j, items_needed);
+    }
+  }
 }
 
 /* Remove at most num items from sections with the given item id, starting with
@@ -54,8 +64,26 @@ void refill_from_stockroom() {
  * items, you should remove as many items as possible.
  */
 int fulfill_order(unsigned short id, int num) {
-  // TODO: implement this function
-  return 0;
+  int count = 0;
+  for (int i = 0; i < NUM_AISLES; i++) {
+    unsigned long* aisle = &aisles[i];
+    for (int j = 0; j < SECTIONS_PER_AISLE; j++) {
+      if (get_id(aisle, j) != id) {continue;}
+      int items_needed = num_items(aisle, j);
+      if (items_needed > num) {items_needed = num;}
+      count += items_needed;
+      num -= items_needed;
+      remove_items(aisle, j, items_needed);
+    }
+  }
+  int stock_needed = num;
+  if (stockroom[id] < stock_needed) {
+    stock_needed = stockroom[id];
+  }
+  stockroom[id] -= stock_needed;
+  count += stock_needed;
+  num -= stock_needed;
+  return count;
 }
 
 /* Return a pointer to the first section in the aisles with the given item id
@@ -64,7 +92,13 @@ int fulfill_order(unsigned short id, int num) {
  * stockroom). Break ties by returning the section with the lowest address.
  */
 unsigned short* empty_section_with_id(unsigned short id) {
-  // TODO: implement this function
+  for (int i = 0; i < NUM_AISLES; i++) {
+    unsigned long* aisle = &aisles[i];
+    for (int j = 0; j < SECTIONS_PER_AISLE; j++) {
+      if (get_id(aisle, j) != id) {continue;}
+      if (num_items(aisle, j) == 0) {return (unsigned short*) aisle + j;}
+    }
+  }
   return NULL;
 }
 
@@ -74,5 +108,20 @@ unsigned short* empty_section_with_id(unsigned short id) {
  */
 unsigned short* section_with_most_items() {
   // TODO: implement this function
-  return NULL;
+  unsigned short* largest_section_ptr = (unsigned short*) &aisles[0];
+  unsigned short largest_section_amt = 0;
+  for (int i = 0; i < NUM_AISLES; i++) {
+    unsigned long* aisle = &aisles[i];
+    for (int j = 0; j < SECTIONS_PER_AISLE; j++) {
+      unsigned short section_amt = num_items(aisle, j);
+      if (section_amt > largest_section_amt) {
+        largest_section_ptr = (unsigned short*) aisle + j;
+        largest_section_amt = section_amt;
+      }
+      if (largest_section_amt == NUM_SPACES) {
+        return largest_section_ptr;
+      }
+    }
+  }
+  return largest_section_ptr;
 }
