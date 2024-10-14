@@ -107,7 +107,6 @@ unsigned short* empty_section_with_id(unsigned short id) {
  * the stockroom). Break ties by returning the section with the lowest address.
  */
 unsigned short* section_with_most_items() {
-  // TODO: implement this function
   unsigned short* largest_section_ptr = (unsigned short*) &aisles[0];
   unsigned short largest_section_amt = 0;
   for (int i = 0; i < NUM_AISLES; i++) {
