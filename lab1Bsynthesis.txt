@@ -6,21 +6,21 @@ NetID(s):
 
 
 -----------------------------------------------------------
-1) Benefit 1:
+1) Benefit 1: Can represent much larger sections (256 "slots" instead of 10).
 
-   Benefit 2:
+   Benefit 2: Manipulation requires less computation. For example counting, adding, and removing items would only require an arithmetic operation instead of a for loop and bit shifting.
 
-   Drawback:
+   Drawback: Can't store the position of each item since it is just a value.
 
-   Store manager preference w/ justification:
-
------------------------------------------------------------
-2) Difference? Y/N
-
-   Explain:
+   Store manager preference w/ justification: I would prefer my friends representation since the position of identical items within a section isn't very important information, especially since the program was mostly used for keeping track of stock and fulfilling orders, which only requires knowing the value. The space and computation savings would also be much more significant in a system the size of a real store.
 
 -----------------------------------------------------------
-3) Explain:
+2) Difference? N
 
-   Considerations:
+   Explain: Since the default type of a decimal input is a signed int then both y's would have the same data type and same bits in memory.
+
+-----------------------------------------------------------
+3) Explain: It is problematic becaus the == and != operators only return true if the two numbers are exactly the same, which doesn't work very well with all of the rounding errors in a floating point number.
+
+   Considerations: The main consideration whe choosing a threshold value is the size of the floating point numbers you are comparing. The bigger the values the bigger the threshold needs to be since it is essential accounting for the rounding errors, which get bigger as the numbers get bigger.
 
